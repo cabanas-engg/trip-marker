@@ -1,7 +1,16 @@
-<div class="flex items-center main">
-  
-  <div id="map"></div>
-</div>
+
+<main class="grid grid-rows-5 grid-flow-col gap-3 main">
+  <div class="row-span-5 col-span-1">
+    <div>
+      <span cdkDropList>
+        <mat-icon matToolTip="Set a Marker" (cdkDragEnded)="dragEnd($event)" cdkDropListSortingDisabled cdkDrag cdkDragHandle >add_location</mat-icon>
+      </span>
+    </div>    
+  </div>
+  <div class="row-span-4 col-span-5">
+    <div id="map" ></div>
+  </div>
+</main>
 
 
 <router-outlet></router-outlet>
