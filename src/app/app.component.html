@@ -1,14 +1,55 @@
 
-<main class="grid grid-rows-5 grid-flow-col gap-3 main">
-  <div class="row-span-5 col-span-1">
-    <div>
-      <span cdkDropList>
-        <mat-icon matToolTip="Set a Marker" (cdkDragEnded)="dragEnd($event)" cdkDropListSortingDisabled cdkDrag cdkDragHandle >add_location</mat-icon>
+<main class="grid grid-rows-5 grid-flow-col gap-3 gap-x-8 main bg-white-100 dark:bg-slate-900 dark:text-white">
+  <div class="row-span-5 col-span-1 flex-col flex">
+
+    <div class="flex justify-start align-center gap-1">
+      <button mat-icon-button class="info-button">
+        <mat-icon>help_outline</mat-icon>
+        How it works
+      </button>
+    </div>   
+
+    <div class="flex justify-start align-center gap-8 mt-16">
+      <span class="flex-col">
+        <h2>Add a Marker</h2>
+        <small>Drag icon into map</small>
       </span>
-    </div>    
+      <span cdkDropList class="marker-container">
+        <mat-icon matTooltip="Set a Marker" class="marker" (cdkDragEnded)="dragEnd($event)" cdkDropListSortingDisabled cdkDrag cdkDragHandle >add_location</mat-icon>
+      </span>
+    </div>   
+
+    <div class="flex justify-start align-center gap-8 mt-16">
+      <span class="flex-col">
+        <h2>Days</h2>
+        <small>Order items by day</small>
+      </span>
+      <span class="marker-container">
+        <mat-icon matTooltip="Add new Day" (click)="addDay()">library_add</mat-icon>
+      </span>
+    </div>
+    
+    <div class="flex justify-start align-center gap-8 mt-3" *ngFor="let day of days">
+      <span class="flex-col">
+        <h2>{{day}}</h2>
+      </span>
+    </div>
+
+    <div class="flex justify-center align-center gap-5" style="margin-top: auto;">
+      <button mat-icon-button class="info-button">
+        <mat-icon>cloud_download</mat-icon>
+        Share Trip
+      </button>
+      <button mat-icon-button class="info-button" (click)="fileInput.click()">
+        <mat-icon>cloud_upload</mat-icon>
+        Upload Trip
+      </button>
+      <input type="file" accept=".json" #fileInput>
+    </div>   
+
   </div>
-  <div class="row-span-4 col-span-5">
-    <div id="map" ></div>
+  <div class="row-span-5 col-span-5">
+    <div id="map" class="dark:text-black"></div>
   </div>
 </main>
 

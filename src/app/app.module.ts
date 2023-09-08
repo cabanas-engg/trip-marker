@@ -5,12 +5,9 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip'; 
 
 import {
-  CdkDragDrop,
   CdkDrag,
   CdkDropList,
   CdkDropListGroup,
-  moveItemInArray,
-  transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import {MatInputModule} from '@angular/material/input'; 
 

@@ -14,6 +14,7 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch';
 export class AppComponent implements AfterViewInit {
   private map: L.Map | any = null;
   private centroid: L.LatLngExpression = [42.3601, -71.0589];
+  days: string[] = [];
   search: string = "";
   searchInput = GeoSearch.GeoSearchControl({
     provider: new GeoSearch.OpenStreetMapProvider(),
@@ -21,8 +22,8 @@ export class AppComponent implements AfterViewInit {
   provider = new OpenStreetMapProvider({  
     params: {
       email: 'john@example.com'
-  },
-});
+    },
+  });
 
   private initMap(): void {
     this.map = L.map('map', {
@@ -38,7 +39,7 @@ export class AppComponent implements AfterViewInit {
 
     tiles.addTo(this.map);
     this.map.addControl(this.searchInput);
-}
+  }
 
   constructor(private elementRef:ElementRef) { }
 
@@ -53,12 +54,16 @@ export class AppComponent implements AfterViewInit {
 
   dragEnd(event: CdkDragEnd) {
     this.clickMap(event.dropPoint.x,event.dropPoint.y );
-}
+  }
 
   clickMap(x:number, y: number): void {
     let position = document.elementFromPoint(x,y);
     let event = new MouseEvent("click", { clientX: x, clientY: y, bubbles: true })
     position?.dispatchEvent(event);
-}
+  }
+
+  addDay(): void {
+    this.days.push(`Day ${this.days.length + 1}`)
+  }
 
 }

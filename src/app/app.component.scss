@@ -2,26 +2,83 @@
     box-sizing: border-box;
 }
 
+h2 {
+  margin: 0px;
+}
+
 #map { 
     height: 100%;
-    width: 100%; }
+    width: 100%;
+    border-radius: 10px;
+   }
 
-  .main {
-    background: rgb(2,0,36);
-    // background: linear-gradient(90deg, rgb(2, 0, 36) 0%, rgb(70, 9, 121) 35%, rgb(147, 0, 255) 100%);
-    min-height: 100dvh;
-    padding: 5rem;
-  }
+.main {
+  // background: rgb(2,0,36);
+  // background: linear-gradient(90deg, rgb(2, 0, 36) 0%, rgb(70, 9, 121) 35%, rgb(147, 0, 255) 100%);
+  min-height: 100vh;
+  padding: 1rem;
+  font-family: 'Asap', sans-serif;
+}
 
-  
+.marker-container {
+  border: 1px solid #4038d8;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
 
-  .mat-icon, .mat-icon:active {
-
+  .marker {
+    transform: scale(2);
     width: fit-content;
     color: #007194;
     cursor: move;
     position: relative;
-    z-index: 1222000;
   }
+}
+
+.info-button {
+    color: #fcd34d;
+    border: solid 1px #fcd34d;
+    padding: 5px 10px;
+    border-radius: 10px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.info-button::before {
+  color: white;
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: #fcd34d;
+  max-width: 0%;
+  animation: info-button-animation 2s ease-in;
+}
+
+.info-button:hover {
+  &::before{
+    transition: 2s all;
+    animation: info-button-animation 2s ease-in;
+  }
+}
+
+@keyframes info-button-animation {
+  from {
+    max-width: 0%;
+  } 
+
+  to {
+    max-width: 100%;
+  }
+}
+
+input {
+  display: none;
+}
+
 
   
