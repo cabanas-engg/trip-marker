@@ -29,9 +29,12 @@
       </span>
     </div>
     
-    <div class="flex justify-start align-center gap-8 mt-3" *ngFor="let day of days">
+    <div class="flex justify-start align-center gap-8 mt-3" *ngFor="let day of days; let i = index">
       <span class="flex-col">
         <h2>{{day}}</h2>
+        <button mat-raised-button (click)="removeDay(i)">
+          Remove
+        </button>
       </span>
     </div>
 
@@ -44,11 +47,23 @@
         <mat-icon>cloud_upload</mat-icon>
         Upload Trip
       </button>
-      <input type="file" accept=".json" #fileInput>
+      <input type="file" accept=".json" #fileInput id="file">
     </div>   
 
   </div>
-  <div class="row-span-5 col-span-5">
+  <div class="row-span-1 col-span-3">
+    <div class="flex text-white">
+      <mat-form-field appearance="outline">
+        <input type="text" matInput class="text-white" [(ngModel)]="searchText" (keyup)="searchMap($event)">
+      </mat-form-field>
+      <div class="results" *ngIf="searchResults?.results?.length">
+        <div *ngFor="let result of searchResults?.results">
+          <p>{{result.label}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row-span-4 col-span-5">
     <div id="map" class="dark:text-black"></div>
   </div>
 </main>

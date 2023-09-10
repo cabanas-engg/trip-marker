@@ -10,6 +10,7 @@ h2 {
     height: 100%;
     width: 100%;
     border-radius: 10px;
+    z-index: 1;
    }
 
 .main {
@@ -76,9 +77,37 @@ h2 {
   }
 }
 
-input {
+#file {
   display: none;
 }
 
+input{
+  color: white !important;
+}
 
-  
+.results{
+    border-radius: 10px;
+    background: whitesmoke;
+    color: black;
+    padding: 10px;
+    position: absolute;
+    top: 4rem;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+
+    div {
+      border-bottom: #007194 1px solid;
+
+      p{
+        margin: 0%;
+        padding: 5px;
+      }
+
+      &:hover{
+        background-color: rgba(222, 221, 221, 0.869);
+        transform: scale(1.05);
+        cursor: pointer;
+      }
+    }
+}

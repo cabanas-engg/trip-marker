@@ -1,9 +1,10 @@
-import { Component, ElementRef, OnInit,AfterViewInit } from '@angular/core';
+import { Component, ElementRef, OnInit,AfterViewInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { CdkDragEnd } from '@angular/cdk/drag-drop';
 
 import * as GeoSearch from 'leaflet-geosearch';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import ResultList from 'leaflet-geosearch/dist/resultList';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,8 @@ export class AppComponent implements AfterViewInit {
   private map: L.Map | any = null;
   private centroid: L.LatLngExpression = [42.3601, -71.0589];
   days: string[] = [];
-  search: string = "";
+  searchResults: ResultList | null = null;
+  searchText: string = "";
   searchInput = GeoSearch.GeoSearchControl({
     provider: new GeoSearch.OpenStreetMapProvider(),
   });
@@ -64,6 +66,15 @@ export class AppComponent implements AfterViewInit {
 
   addDay(): void {
     this.days.push(`Day ${this.days.length + 1}`)
+  }
+
+  removeDay(index: number): void {
+    this.days.splice(index, 1)
+  }
+
+  searchMap(event: KeyboardEvent): void {
+    this.searchInput.autoSearch(event);
+    this.searchText.length ? this.searchResults = this.searchInput.resultList : this.searchResults = null;
   }
 
 }
