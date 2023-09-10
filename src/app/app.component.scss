@@ -17,7 +17,7 @@ h2 {
   // background: rgb(2,0,36);
   // background: linear-gradient(90deg, rgb(2, 0, 36) 0%, rgb(70, 9, 121) 35%, rgb(147, 0, 255) 100%);
   min-height: 100vh;
-  padding: 1rem;
+  padding: 1.5rem;
   font-family: 'Asap', sans-serif;
 }
 
@@ -81,10 +81,6 @@ h2 {
   display: none;
 }
 
-input{
-  color: white !important;
-}
-
 .results{
     border-radius: 10px;
     background: whitesmoke;
@@ -95,6 +91,8 @@ input{
     z-index: 2;
     display: flex;
     flex-direction: column;
+    right: 20px;
+    width: 33%;
 
     div {
       border-bottom: #007194 1px solid;
@@ -111,3 +109,46 @@ input{
       }
     }
 }
+
+.leaflet-bar {
+  display: none !important;
+}
+
+.geosearch.leaflet-bar.leaflet-control.leaflet-control-geosearch.leaflet-geosearch-button {
+  display: none;
+}
+
+:host ::ng-deep { 
+  .mat-mdc-text-field-wrapper.mdc-text-field {
+    font-family: 'Asap', sans-serif;
+    background: whitesmoke;
+    border-radius: 2rem;
+  }
+
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  .mat-focused{
+    border:none;
+  }
+}
+
+.markers {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #816400;
+  background: whitesmoke;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 10px;
+
+  p {
+    margin: 0%;
+  }
+}
+
+// .my-div-icon{
+//   border: 1px solid red;
+// }

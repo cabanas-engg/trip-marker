@@ -28,15 +28,39 @@
         <mat-icon matTooltip="Add new Day" (click)="addDay()">library_add</mat-icon>
       </span>
     </div>
+
+    <div class="flex justify-start align-center gap-8 mt-3" *ngIf="unorderedDay.markers?.length"
+        cdkDropList [cdkDropListData]="unorderedDay.markers">
+        <span class="flex-col w-full justify-start align-center">
+          <h2>{{unorderedDay.name}}</h2>
+          <div class="flex justify-start align-center w-full markers" *ngFor="let marker of unorderedDay.markers; let markIndex = index" cdkDrag>
+            <p>{{marker.label}}</p>
+            <button mat-icon-button (click)="removeMarker(marker.markerObject, 100, markIndex)">
+              <mat-icon>remove_circle_outline</mat-icon>
+            </button>
+          </div>
+        </span>
+      </div>
+
+      <div cdkDropListGroup>
+        <div class="flex justify-start align-center gap-8 mt-3" *ngFor="let day of days; let dayIndex = index" 
+          cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="day.markers"
+          [id]="dayIndex.toString()">
+          <span class="flex-col w-full justify-start align-center">
+            <h2>{{day.name}}</h2>
+            <button mat-icon-button (click)="removeDay(dayIndex)">
+              <mat-icon>remove_circle_outline</mat-icon>
+            </button>
+            <div class="flex justify-start align-center w-full markers" *ngFor="let marker of day.markers; let markIndex = index" cdkDrag>
+              <p>{{marker.label}}</p>
+              <button mat-icon-button (click)="removeMarker(marker.markerObject, dayIndex, markIndex)">
+                <mat-icon>remove_circle_outline</mat-icon>
+              </button>
+            </div>
+          </span>
+        </div>
+      </div>
     
-    <div class="flex justify-start align-center gap-8 mt-3" *ngFor="let day of days; let i = index">
-      <span class="flex-col">
-        <h2>{{day}}</h2>
-        <button mat-raised-button (click)="removeDay(i)">
-          Remove
-        </button>
-      </span>
-    </div>
 
     <div class="flex justify-center align-center gap-5" style="margin-top: auto;">
       <button mat-icon-button class="info-button">
@@ -51,14 +75,14 @@
     </div>   
 
   </div>
-  <div class="row-span-1 col-span-3">
-    <div class="flex text-white">
-      <mat-form-field appearance="outline">
-        <input type="text" matInput class="text-white" [(ngModel)]="searchText" (keyup)="searchMap($event)">
+  <div class="row-span-1 col-span-5">
+    <div class="flex text-white justify-end">
+      <mat-form-field class="w-6/12">
+        <input type="text" matInput class="text-white" placeholder="Search Map" [(ngModel)]="searchText" (keyup)="searchMap($event)">
       </mat-form-field>
       <div class="results" *ngIf="searchResults?.results?.length">
         <div *ngFor="let result of searchResults?.results">
-          <p>{{result.label}}</p>
+          <p (click)="selectSearch(result.label)">{{result.label}}</p>
         </div>
       </div>
     </div>

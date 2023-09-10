@@ -1,10 +1,22 @@
 import { Component, ElementRef, OnInit,AfterViewInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
-import { CdkDragEnd } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDragEnd, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 import * as GeoSearch from 'leaflet-geosearch';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import ResultList from 'leaflet-geosearch/dist/resultList';
+
+interface marker {
+  markerObject: L.Marker,
+  label: string,
+  order?: number,
+  description?: string 
+}
+
+interface day {
+  name: string, 
+  markers?: marker[]
+}
 
 @Component({
   selector: 'app-root',
@@ -14,10 +26,12 @@ import ResultList from 'leaflet-geosearch/dist/resultList';
 })
 export class AppComponent implements AfterViewInit {
   private map: L.Map | any = null;
-  private centroid: L.LatLngExpression = [42.3601, -71.0589];
-  days: string[] = [];
+  private centroid: L.LatLngExpression = [40.7306, -73.9652];
+  days: day[] = [];
+  unorderedDay: day = {name: 'Unordered', markers: []};
   searchResults: ResultList | null = null;
   searchText: string = "";
+  markers: marker[] = [];
   searchInput = GeoSearch.GeoSearchControl({
     provider: new GeoSearch.OpenStreetMapProvider(),
   });
@@ -47,10 +61,11 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.initMap();
-    this.map.on('click',(e: any) => {
-      L.marker([e.latlng.lat, e.latlng.lng]).addTo(this.map).on("click", (e:any) => {
-        alert("hi. you clicked the marker at " + e.latlng);
-      });
+    this.map.on('click',(event: L.LocationEvent) => {
+      let marker =  L.marker(event.latlng, {draggable: true})
+      this.markers.push({markerObject: marker, label: `${this.markers.length + 1} Marker`})
+      this.map.addLayer(marker)
+      this.updateMarkers(marker)
     });
   }
 
@@ -64,8 +79,8 @@ export class AppComponent implements AfterViewInit {
     position?.dispatchEvent(event);
   }
 
-  addDay(): void {
-    this.days.push(`Day ${this.days.length + 1}`)
+  addDay(): number {
+    return this.days.push({name: `Day ${this.days.length + 1}`, markers: []})
   }
 
   removeDay(index: number): void {
@@ -75,6 +90,36 @@ export class AppComponent implements AfterViewInit {
   searchMap(event: KeyboardEvent): void {
     this.searchInput.autoSearch(event);
     this.searchText.length ? this.searchResults = this.searchInput.resultList : this.searchResults = null;
+  }
+
+  selectSearch(selectedQuery: string): void {
+    this.searchInput.searchElement.handleSubmit({query: selectedQuery})
+  }
+
+  removeMarker(marker: L.Marker, dayIndex: number, markIndex: number): void {
+    if(this.map.hasLayer(marker)) {
+      this.map.removeLayer(marker)
+      this.days[dayIndex].markers?.splice(markIndex, 1);
+    }
+  }
+
+  updateMarkers(marker: L.Marker): void {
+    if(this.days.length === 0) this.addDay(); 
+    this.days[0].markers?.push({markerObject: marker, label: `Marker ${this.days[0].markers!.length + 1}`});
+    // this.unorderedDay.markers?.push({markerObject: marker, label: `Marker ${this.unorderedDay.markers.length + 1}`})
+  }
+
+  drop(event: CdkDragDrop<marker[] | any>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+    }
   }
 
 }
