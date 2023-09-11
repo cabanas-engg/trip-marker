@@ -42,7 +42,7 @@
         </span>
       </div>
 
-      <div cdkDropListGroup>
+      <div cdkDropListGroup class="day-container">
         <div class="flex justify-start align-center gap-8 mt-3" *ngFor="let day of days; let dayIndex = index" 
           cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="day.markers"
           [id]="dayIndex.toString()">
@@ -67,11 +67,11 @@
         <mat-icon>cloud_download</mat-icon>
         Share Trip
       </button>
-      <button mat-icon-button class="info-button" (click)="fileInput.click()">
+      <button mat-raised-button type="button" class="info-button" (click)="file.click();">
         <mat-icon>cloud_upload</mat-icon>
         Upload Trip
       </button>
-      <input type="file" accept=".json" #fileInput id="file">
+      <input type="file" style="display:none" accept=".json" #file (change)="readFile($event)">
     </div>   
 
   </div>
@@ -92,5 +92,3 @@
   </div>
 </main>
 
-
-<router-outlet></router-outlet>

@@ -41,6 +41,8 @@ export class AppComponent implements AfterViewInit {
     },
   });
 
+  uploadedFile: JSON | string = "";
+
   private initMap(): void {
     this.map = L.map('map', {
       center: this.centroid,
@@ -122,4 +124,13 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
+  readFile(event: Event) {
+    let file = (event.target as HTMLInputElement).files![0];
+    const reader = new FileReader();
+    reader.readAsText(file, "UTF-8")
+    reader.onload = () => {
+      this.uploadedFile = JSON.parse(reader.result as string);
+      console.log(this.uploadedFile)
+    }
+  }
 }
