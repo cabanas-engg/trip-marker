@@ -7,7 +7,6 @@ h2 {
 }
 
 #map { 
-    height: 100%;
     width: 100%;
     border-radius: 10px;
     z-index: 1;
@@ -27,6 +26,7 @@ h2 {
   display: flex;
   align-items: center;
   padding: 1rem;
+  height: 20%;
 
   .marker {
     transform: scale(2);
@@ -36,40 +36,41 @@ h2 {
     position: relative;
   }
 }
-
 .info-button {
-    color: #fcd34d !important;
-    border: solid 1px #fcd34d;
-    padding: 5px 10px;
-    border-radius: 10px;
-    display: flex;
-    gap: 5px;
-    align-items: center;
-    position: relative;
-    background: transparent;
-    background-color: transparent;
-    transition: all .35s;
-}
-
-.info-button:after {
-  color: #fff !important;
-  content: "";
-  position: absolute;
+  display: inline-block;
+  color: #fcd34d !important;
+  border: solid 1px #fcd34d;
+  padding: 5px 10px;
   border-radius: 10px;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 100%;
-  background: #fcd34d;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  position: relative;
+  background: transparent;
+  background-color: transparent;
   transition: all .35s;
-}
-
-.info-button:hover {
-  color: #fff !important;
-}
-
-.info-button:hover:after {
-  width: 100%;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  &:before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    transition: all .35s;
+    z-index: -1;
+    background-color: darken(#fcd34d, 15%);
+    border-radius: 10px;
+  }
+  &:hover {
+    color: #fff !important;
+    border: none;
+    &:before {
+      width: 100%;
+    }
+  }
 }
 
 @keyframes info-button-animation {
@@ -151,6 +152,17 @@ h2 {
 }
 
 .day-container {
-  max-height: 300px;
+    max-height: 25rem;
     overflow: auto;
+    cursor: pointer;
+
+    .active {
+      border: 1px solid #4038d8;
+      border-radius: 10px;
+    }
+}
+
+.h-80 {
+    height: 38rem;
+    margin-top: 1.5rem;
 }

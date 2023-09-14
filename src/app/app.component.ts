@@ -28,20 +28,20 @@ export class AppComponent implements AfterViewInit {
   private map: L.Map | any = null;
   private centroid: L.LatLngExpression = [40.7306, -73.9652];
   days: day[] = [];
-  unorderedDay: day = {name: 'Unordered', markers: []};
   searchResults: ResultList | null = null;
   searchText: string = "";
   markers: marker[] = [];
   searchInput = GeoSearch.GeoSearchControl({
     provider: new GeoSearch.OpenStreetMapProvider(),
   });
-  provider = new OpenStreetMapProvider({  
+  private provider = new OpenStreetMapProvider({  
     params: {
       email: 'john@example.com'
     },
   });
-
-  uploadedFile: JSON | string = "";
+  private uploadedFile: JSON | string = "";
+  locationLabel: string = "";
+  activeDay: number = 0;
 
   private initMap(): void {
     this.map = L.map('map', {
@@ -64,7 +64,7 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.initMap();
     this.map.on('click',(event: L.LocationEvent) => {
-      let marker =  L.marker(event.latlng, {draggable: true})
+      let marker = L.marker(event.latlng, {draggable: true})
       this.markers.push({markerObject: marker, label: `${this.markers.length + 1} Marker`})
       this.map.addLayer(marker)
       this.updateMarkers(marker)
@@ -86,7 +86,11 @@ export class AppComponent implements AfterViewInit {
   }
 
   removeDay(index: number): void {
+    this.days[index].markers!.forEach( (marker: marker, markIndex: number) => {
+      this.map.removeLayer(marker.markerObject)
+    })
     this.days.splice(index, 1)
+    if(this.activeDay === index && index !== 0) this.setActiveDay(index - 1)
   }
 
   searchMap(event: KeyboardEvent): void {
@@ -96,6 +100,14 @@ export class AppComponent implements AfterViewInit {
 
   selectSearch(selectedQuery: string): void {
     this.searchInput.searchElement.handleSubmit({query: selectedQuery})
+    this.setLocationLabel(selectedQuery);
+    this.searchText = "";
+    this.searchResults = null;
+  }
+
+  setLocationLabel(label: string): void {
+    let formattedString = label.split(",")[0];
+    this.locationLabel = formattedString;
   }
 
   removeMarker(marker: L.Marker, dayIndex: number, markIndex: number): void {
@@ -107,11 +119,10 @@ export class AppComponent implements AfterViewInit {
 
   updateMarkers(marker: L.Marker): void {
     if(this.days.length === 0) this.addDay(); 
-    this.days[0].markers?.push({markerObject: marker, label: `Marker ${this.days[0].markers!.length + 1}`});
-    // this.unorderedDay.markers?.push({markerObject: marker, label: `Marker ${this.unorderedDay.markers.length + 1}`})
+    this.days[this.activeDay].markers?.push({markerObject: marker, label: `Marker ${this.days[this.activeDay].markers!.length + 1}`});
   }
 
-  drop(event: CdkDragDrop<marker[] | any>) {
+  drop(event: CdkDragDrop<marker[] | any>): void {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -124,13 +135,21 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  readFile(event: Event) {
+  readFile(event: Event): void {
     let file = (event.target as HTMLInputElement).files![0];
     const reader = new FileReader();
     reader.readAsText(file, "UTF-8")
     reader.onload = () => {
       this.uploadedFile = JSON.parse(reader.result as string);
-      console.log(this.uploadedFile)
+      this.readTripFile(this.uploadedFile);
     }
+  }
+
+  setActiveDay(index: number): void {
+    this.activeDay = index;
+  }
+
+  readTripFile(file: string | JSON): void {
+    console.log(file)
   }
 }
