@@ -17,17 +17,16 @@
         <small>Order items by day</small>
       </span>
       <span class="marker-container">
-        <mat-icon matTooltip="Add new Day" (click)="addDay()">library_add</mat-icon>
+        <mat-icon matTooltip="Add new Day" (click)="trip.addDay()">library_add</mat-icon>
       </span>
     </div>
 
       <div cdkDropListGroup class="day-container">
-        <div class="flex justify-start items-center gap-8 mt-3" *ngFor="let day of days; let dayIndex = index" 
-          cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="day.markers"
-          [id]="dayIndex.toString()">
-          <span class="flex-col w-full justify-start items-center p-2.5"  [ngClass]="{'active': activeDay === dayIndex}">
-            <div class="flex justify-between items-center" (click)="setActiveDay(dayIndex)">
-              <h2>{{day.name}}</h2>
+        <div class="flex justify-start items-center gap-8 mt-3" *ngFor="let day of trip.days; let dayIndex = index" 
+          cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="day.markers">
+          <span class="flex-col w-full justify-start items-center p-2.5"  [ngClass]="{'active': trip.activeDay === dayIndex}">
+            <div class="flex justify-between items-center" (click)="trip.setActiveDay(dayIndex)">
+              <h2>{{day.label}}</h2>
               <button mat-icon-button (click)="removeDay(dayIndex)">
                 <mat-icon>cancel</mat-icon>
               </button>
@@ -59,7 +58,7 @@
   <div class="row-span-6 col-span-5">
     <div class="flex text-white justify-between">
       <p style="align-self: end;
-      font-size: 1.5rem;margin:0px">{{locationLabel}}</p>
+      font-size: 1.5rem;margin:0px">{{trip.locationLabel}}</p>
       
       <mat-form-field class="w-6/12">
         <input type="text" matInput class="text-white" placeholder="Search Map" [(ngModel)]="searchText" (keyup)="searchMap($event)">

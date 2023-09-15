@@ -1,22 +1,10 @@
-import { Component, ElementRef, OnInit,AfterViewInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { CdkDragDrop, CdkDragEnd, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-
 import * as GeoSearch from 'leaflet-geosearch';
-import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import ResultList from 'leaflet-geosearch/dist/resultList';
+import { Trip, TripMarker } from './classes/trip';
 
-interface marker {
-  markerObject: L.Marker,
-  label: string,
-  order?: number,
-  description?: string 
-}
-
-interface day {
-  name: string, 
-  markers?: marker[]
-}
 
 @Component({
   selector: 'app-root',
@@ -27,21 +15,13 @@ interface day {
 export class AppComponent implements AfterViewInit {
   private map: L.Map | any = null;
   private centroid: L.LatLngExpression = [40.7306, -73.9652];
-  days: day[] = [];
+  trip: Trip = new Trip();
   searchResults: ResultList | null = null;
   searchText: string = "";
-  markers: marker[] = [];
   searchInput = GeoSearch.GeoSearchControl({
     provider: new GeoSearch.OpenStreetMapProvider(),
   });
-  private provider = new OpenStreetMapProvider({  
-    params: {
-      email: 'john@example.com'
-    },
-  });
   private uploadedFile: JSON | string = "";
-  locationLabel: string = "";
-  activeDay: number = 0;
 
   private initMap(): void {
     this.map = L.map('map', {
@@ -65,9 +45,8 @@ export class AppComponent implements AfterViewInit {
     this.initMap();
     this.map.on('click',(event: L.LocationEvent) => {
       let marker = L.marker(event.latlng, {draggable: true})
-      this.markers.push({markerObject: marker, label: `${this.markers.length + 1} Marker`})
       this.map.addLayer(marker)
-      this.updateMarkers(marker)
+      this.trip.updateMarkers(marker)
     });
   }
 
@@ -81,16 +60,11 @@ export class AppComponent implements AfterViewInit {
     position?.dispatchEvent(event);
   }
 
-  addDay(): number {
-    return this.days.push({name: `Day ${this.days.length + 1}`, markers: []})
-  }
-
   removeDay(index: number): void {
-    this.days[index].markers!.forEach( (marker: marker, markIndex: number) => {
+    this.trip.days[index].markers!.forEach( (marker: TripMarker) => {
       this.map.removeLayer(marker.markerObject)
     })
-    this.days.splice(index, 1)
-    if(this.activeDay === index && index !== 0) this.setActiveDay(index - 1)
+    this.trip.removeDay(index);
   }
 
   searchMap(event: KeyboardEvent): void {
@@ -107,22 +81,17 @@ export class AppComponent implements AfterViewInit {
 
   setLocationLabel(label: string): void {
     let formattedString = label.split(",")[0];
-    this.locationLabel = formattedString;
+    this.trip.locationLabel = formattedString;
   }
 
-  removeMarker(marker: L.Marker, dayIndex: number, markIndex: number): void {
+  removeMarker(marker: L.Marker | TripMarker | any, dayIndex: number, markIndex: number): void {
     if(this.map.hasLayer(marker)) {
-      this.map.removeLayer(marker)
-      this.days[dayIndex].markers?.splice(markIndex, 1);
+      this.map.removeLayer(marker);
+      this.trip.removeMarker(dayIndex, markIndex)
     }
   }
 
-  updateMarkers(marker: L.Marker): void {
-    if(this.days.length === 0) this.addDay(); 
-    this.days[this.activeDay].markers?.push({markerObject: marker, label: `Marker ${this.days[this.activeDay].markers!.length + 1}`});
-  }
-
-  drop(event: CdkDragDrop<marker[] | any>): void {
+  drop(event: CdkDragDrop<TripMarker[] | TripMarker[] | any>): void {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -143,10 +112,6 @@ export class AppComponent implements AfterViewInit {
       this.uploadedFile = JSON.parse(reader.result as string);
       this.readTripFile(this.uploadedFile);
     }
-  }
-
-  setActiveDay(index: number): void {
-    this.activeDay = index;
   }
 
   readTripFile(file: string | JSON): void {
