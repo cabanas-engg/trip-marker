@@ -1,20 +1,24 @@
-
-<main class="grid grid-rows-5 grid-cols-7 grid-flow-col gap-3 gap-x-8 main bg-white-100 dark:bg-slate-900 dark:text-white">
-  <div class="row-span-5 col-span-2 flex-col flex " style="background: #16213b;
+<main class="grid grid-rows-5 grid-cols-1 md:grid-cols-7 gap-3 gap-x-8 main bg-white-100 dark:bg-slate-900 dark:text-white">
+  <div class="row-span-6 col-span-1 md:col-span-2 md:order-1 order-2 flex-col flex " style="background: #16213b;
   border-radius: 10px;
   padding: 20px;">
 
-    <div class="flex justify-start items-center gap-1">
-      <button mat-icon-button class="info-button">
-        <mat-icon>help_outline</mat-icon>
-        How it works
-      </button>
+    <div class="flex justify-start items-center gap-1" style="border: 1px solid #4038d8;
+    border-radius: 10px;">
+      <span cdkDropList class="marker-container">
+        <mat-icon matTooltip="Set a Marker" class="marker" (cdkDragEnded)="dragEnd($event)" cdkDropListSortingDisabled cdkDrag cdkDragHandle >add_location</mat-icon>
+      </span>
+      <span class="marker-container">
+        <mat-icon matTooltip="Upload Trip"  class="marker" (click)="file.click();">cloud_upload</mat-icon>
+      </span>
+      <span class="marker-container">
+        <mat-icon matTooltip="Share Trip" class="marker" >cloud_download</mat-icon>
+      </span>
     </div>   
 
-    <div class="flex justify-between items-center gap-8 mt-10">
+    <div class="flex justify-between items-center gap-8 mt-2">
       <span class="flex-col">
         <h2>Days</h2>
-        <small>Order items by day</small>
       </span>
       <span class="marker-container">
         <mat-icon matTooltip="Add new Day" (click)="trip.addDay()">library_add</mat-icon>
@@ -32,17 +36,32 @@
               </button>
             </div>
             <div class="flex justify-start markers" *ngFor="let marker of day.markers; let markIndex = index" cdkDrag>
-              <p>{{marker.label}}</p>
-              <button mat-icon-button (click)="removeMarker(marker.markerObject, dayIndex, markIndex)">
-                <mat-icon>remove_circle_outline</mat-icon>
+              <p *ngIf="markerInEdit !== markIndex;else edit">{{marker.label}}</p>
+              <ng-template #edit>
+                <mat-form-field *ngIf="markerInEdit === markIndex">
+                  <input [(ngModel)]="marker.label" matInput (change)="resetEdit()">
+                </mat-form-field>
+              </ng-template>
+              <button mat-icon-button [matMenuTriggerFor]="menu" class="flex items-center">
+                <mat-icon>more_horizontal</mat-icon>
               </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="editMarker(markIndex)">
+                  <mat-icon>edit</mat-icon>
+                  Edit
+                </button>
+                <button mat-menu-item class="flex items-center" (click)="removeMarker(marker.markerObject, dayIndex, markIndex)">
+                  <mat-icon>remove_circle_outline</mat-icon>
+                  Remove
+                </button>
+              </mat-menu>
             </div>
           </span>
         </div>
       </div>
     
 
-    <div class="flex justify-center items-center gap-5" style="margin-top: auto;">
+    <div class="flex justify-center items-center gap-5 mt-5" style="margin-top: auto;">
       <button mat-icon-button class="info-button">
         <mat-icon>cloud_download</mat-icon>
         Share Trip
@@ -55,12 +74,11 @@
     </div>   
 
   </div>
-  <div class="row-span-6 col-span-5">
-    <div class="flex text-white justify-between">
-      <p style="align-self: end;
-      font-size: 1.5rem;margin:0px">{{trip.locationLabel}}</p>
+  <div class="row-span-6 col-span-1 md:col-span-5 md:order-2 order-1">
+    <div class="md:flex md:flex-row flex-col text-white justify-between sm:gap-8 items-center">
+      <p style="margin-top: 12px;" class="md:m-0	m-2.5 text-2xl">{{trip.locationLabel}}</p>
       
-      <mat-form-field class="w-6/12">
+      <mat-form-field class="md:w-6/12 w-full search">
         <input type="text" matInput class="text-white" placeholder="Search Map" [(ngModel)]="searchText" (keyup)="searchMap($event)">
       </mat-form-field>
       <div class="results" *ngIf="searchResults?.results?.length">
@@ -70,9 +88,6 @@
       </div>
     </div>
     <div class="flex text-white justify-end items-center">
-      <span cdkDropList class="marker-container">
-        <mat-icon matTooltip="Set a Marker" class="marker" (cdkDragEnded)="dragEnd($event)" cdkDropListSortingDisabled cdkDrag cdkDragHandle >add_location</mat-icon>
-      </span>
       <div id="map" class="dark:text-black h-80"></div>
     </div>
   </div>

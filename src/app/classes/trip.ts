@@ -1,5 +1,8 @@
 export class Trip {
-    locationLabel: string = "";
+    locationLabel: string = "New York";
+    centroid: L.LatLngExpression = [40.7306, -73.9652];
+    lat: number = 0;
+    long: number = 0;
     days: TripDay[] = [];
     activeDay: number = 0;
 
@@ -7,6 +10,9 @@ export class Trip {
         if(trip) {
             this.activeDay = trip.activeDay;
             this.locationLabel = trip.locationLabel;
+            this.lat = trip.lat;
+            this.long = trip.long;
+            this.centroid = [this.lat, this.long];
             if(Array.isArray(trip.days) && trip.days.length) {
                 trip.days.forEach((day: TripDay) => {
                     this.days.push(new TripDay(day))

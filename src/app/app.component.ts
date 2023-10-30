@@ -22,6 +22,7 @@ export class AppComponent implements AfterViewInit {
     provider: new GeoSearch.OpenStreetMapProvider(),
   });
   private uploadedFile: JSON | string = "";
+  markerInEdit: number | null = null;
 
   private initMap(): void {
     this.map = L.map('map', {
@@ -116,5 +117,13 @@ export class AppComponent implements AfterViewInit {
 
   readTripFile(file: string | JSON): void {
     console.log(file)
+  }
+
+  editMarker(markerIndex: number): void {
+    this.markerInEdit = markerIndex;
+  }
+
+  resetEdit(): void {
+    this.markerInEdit = null;
   }
 }
