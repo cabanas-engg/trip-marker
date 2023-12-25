@@ -1,0 +1,28 @@
+{ 
+    "data": {
+    "locationLabel": "New York baby",
+    "lat": 43.73,
+    "long": -73.96,
+    "days": [
+      {
+        "label": "Day One",
+        "markers": [
+          {
+            "label": "Marker 1",
+            "lat": 43.73,
+            "long": -73.96,
+            "order": 1,
+            "description": ""
+          },
+          {
+            "label": "Marker 2",
+            "lat": 43.73,
+            "long": -73.96,
+            "order": 2,
+            "description": ""
+          }
+        ]
+      }
+    ]
+  }
+}

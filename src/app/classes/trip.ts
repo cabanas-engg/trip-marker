@@ -1,3 +1,5 @@
+import * as L from 'leaflet';
+
 export class Trip {
     locationLabel: string = "New York";
     centroid: L.LatLngExpression = [40.7306, -73.9652];
@@ -5,10 +7,11 @@ export class Trip {
     long: number = 0;
     days: TripDay[] = [];
     activeDay: number = 0;
+    map: L.Map | null = null;
 
     constructor(trip?: Trip) {
         if(trip) {
-            this.activeDay = trip.activeDay;
+            this.activeDay = trip.activeDay | 0;
             this.locationLabel = trip.locationLabel;
             this.lat = trip.lat;
             this.long = trip.long;
@@ -36,12 +39,31 @@ export class Trip {
 
     updateMarkers(marker: L.Marker): void {
         if(this.days.length === 0) this.addDay(); 
-        this.days[this.activeDay].markers?.push({markerObject: marker, label: `Marker ${this.days[this.activeDay].markers!.length + 1}`, order: 0, description: ""});
+        this.days[this.activeDay].markers?.push(this.createNextMarker(marker));
     }
 
     setActiveDay(index: number): void {
         this.activeDay = index;
     }
+
+    createNextMarker(marker: L.Marker): TripMarker {
+        return {markerObject: marker, label: `Marker ${this.days[this.activeDay].markers!.length + 1}`, order: 0, description: ""}
+    }
+
+    initMap(): void {
+        this.map = L.map('map', {
+          center: this.centroid,
+          zoom: 13
+        });
+    
+        const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 20,
+          minZoom: 5,
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        });
+    
+        tiles.addTo(this.map);
+      }
 }
 
 export class TripDay {
@@ -64,7 +86,9 @@ export class TripMarker {
     markerObject: L.Marker | null = null;
     label: string = "";
     order: number = 0;
-    description: string = ""
+    // lat: number = 0;
+    // long: number = 0;
+    description: string = "";
 
     constructor(marker?: TripMarker) {
         if(marker) {
@@ -74,4 +98,6 @@ export class TripMarker {
             this.description = marker.description;
         }
     }
+
+    
 }

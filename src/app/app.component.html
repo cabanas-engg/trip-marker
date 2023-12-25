@@ -3,16 +3,20 @@
   border-radius: 10px;
   padding: 20px;">
 
-    <div class="flex justify-start items-center gap-1" style="border: 1px solid #4038d8;
+    <div class="flex justify-between items-center gap-1" style="border: 1px solid #4038d8;
     border-radius: 10px;">
       <span cdkDropList class="marker-container">
         <mat-icon matTooltip="Set a Marker" class="marker" (cdkDragEnded)="dragEnd($event)" cdkDropListSortingDisabled cdkDrag cdkDragHandle >add_location</mat-icon>
       </span>
       <span class="marker-container">
         <mat-icon matTooltip="Upload Trip"  class="marker" (click)="file.click();">cloud_upload</mat-icon>
+        <input type="file" style="display:none" accept=".json" #file (change)="readFile($event)">
       </span>
       <span class="marker-container">
         <mat-icon matTooltip="Share Trip" class="marker" >cloud_download</mat-icon>
+      </span>
+      <span class="marker-container">
+        <mat-icon matTooltip="How it works" class="marker" >help</mat-icon>
       </span>
     </div>   
 
@@ -61,7 +65,7 @@
       </div>
     
 
-    <div class="flex justify-center items-center gap-5 mt-5" style="margin-top: auto;">
+    <!-- <div class="flex justify-center items-center gap-5 mt-5" style="margin-top: auto;">
       <button mat-icon-button class="info-button">
         <mat-icon>cloud_download</mat-icon>
         Share Trip
@@ -71,7 +75,7 @@
         Upload Trip
       </button>
       <input type="file" style="display:none" accept=".json" #file (change)="readFile($event)">
-    </div>   
+    </div>    -->
 
   </div>
   <div class="row-span-6 col-span-1 md:col-span-5 md:order-2 order-1">

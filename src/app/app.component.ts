@@ -44,6 +44,7 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.initMap();
+    this.map.addControl(this.searchInput);
     this.map.on('click',(event: L.LocationEvent) => {
       let marker = L.marker(event.latlng, {draggable: true})
       this.map.addLayer(marker)
@@ -115,8 +116,15 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  readTripFile(file: string | JSON): void {
-    console.log(file)
+  readTripFile(file: string | JSON | any): void {
+    this.trip = new Trip(file.data)
+    console.log(this.trip)
+    this.trip.days.forEach( day => {
+      day.markers.forEach( marker => {
+        L.marker([43.73, -73.96]).addTo(this.map);
+        console.log(marker)
+      });
+    });
   }
 
   editMarker(markerIndex: number): void {
