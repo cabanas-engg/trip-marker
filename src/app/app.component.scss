@@ -136,6 +136,13 @@ h2 {
   .mat-focused{
     border:none;
   }
+
+  .marker-form-field .mat-mdc-form-field-infix{ 
+    min-height: 25px;
+    padding: 6px 0px !important;
+    letter-spacing: normal;
+  }
+
 }
 
 .markers {

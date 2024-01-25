@@ -5,15 +5,12 @@
 
     <div class="flex justify-between items-center gap-1" style="border: 1px solid #4038d8;
     border-radius: 10px;">
-      <span cdkDropList class="marker-container">
-        <mat-icon matTooltip="Set a Marker" class="marker" (cdkDragEnded)="dragEnd($event)" cdkDropListSortingDisabled cdkDrag cdkDragHandle >add_location</mat-icon>
-      </span>
       <span class="marker-container">
         <mat-icon matTooltip="Upload Trip"  class="marker" (click)="file.click();">cloud_upload</mat-icon>
         <input type="file" style="display:none" accept=".json" #file (change)="readFile($event)">
       </span>
       <span class="marker-container">
-        <mat-icon matTooltip="Share Trip" class="marker" >cloud_download</mat-icon>
+        <mat-icon matTooltip="Share Trip" class="marker" (click)="shareTrip()">cloud_download</mat-icon>
       </span>
       <span class="marker-container">
         <mat-icon matTooltip="How it works" class="marker" >help</mat-icon>
@@ -42,7 +39,7 @@
             <div class="flex justify-start markers" *ngFor="let marker of day.markers; let markIndex = index" cdkDrag>
               <p *ngIf="markerInEdit !== markIndex;else edit">{{marker.label}}</p>
               <ng-template #edit>
-                <mat-form-field *ngIf="markerInEdit === markIndex">
+                <mat-form-field *ngIf="markerInEdit === markIndex" class="marker-form-field">
                   <input [(ngModel)]="marker.label" matInput (change)="resetEdit()">
                 </mat-form-field>
               </ng-template>
