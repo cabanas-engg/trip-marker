@@ -19,6 +19,8 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+
 
 
 @NgModule({
@@ -40,7 +42,8 @@ import {MatMenuModule} from '@angular/material/menu';
     FormsModule,
     CommonModule,
     MatFormFieldModule,
-    MatMenuModule
+    MatMenuModule,
+    MatSlideToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

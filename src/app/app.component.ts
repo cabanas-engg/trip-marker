@@ -23,6 +23,7 @@ export class AppComponent implements AfterViewInit {
   });
   private uploadedFile: JSON | string = "";
   markerInEdit: number | null = null;
+  dragOnly: boolean = false;
 
   private initMap(): void {
     this.map = L.map('map', {
@@ -46,9 +47,11 @@ export class AppComponent implements AfterViewInit {
     this.initMap();
     this.map.addControl(this.searchInput);
     this.map.on('click',(event: L.LocationEvent) => {
-      let marker = L.marker(event.latlng, {draggable: true})
-      this.map.addLayer(marker)
-      this.trip.updateMarkers(marker)
+      if(!this.dragOnly) {
+        let marker = L.marker(event.latlng, {draggable: true})
+        this.map.addLayer(marker)
+        this.trip.updateMarkers(marker)
+      }
     });
   }
 

@@ -200,3 +200,19 @@ h2 {
   }
 }
 
+
+#drag-container {
+  position: absolute;
+  z-index: 10;
+  margin-bottom: 10px;
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #4038d878;
+  left: 10px;
+
+  &:hover {
+    background-color: #4038d8;
+  }
+}
+

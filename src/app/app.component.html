@@ -22,7 +22,7 @@
         <h2>Days</h2>
       </span>
       <span class="marker-container">
-        <mat-icon matTooltip="Add new Day" (click)="trip.addDay()">library_add</mat-icon>
+        <mat-icon matTooltip="Add New Day" (click)="trip.addDay()">library_add</mat-icon>
       </span>
     </div>
 
@@ -88,8 +88,9 @@
         </div>
       </div>
     </div>
-    <div class="flex text-white justify-end items-center">
+    <div class="flex flex-col text-white justify-end items-center" style="position: relative;">
       <div id="map" class="dark:text-black h-80"></div>
+      <mat-slide-toggle anchor="map" id="drag-container" [checked]="dragOnly" (change)="dragOnly = !dragOnly" class="text-white">Drag Only</mat-slide-toggle>
     </div>
   </div>
 </main>
