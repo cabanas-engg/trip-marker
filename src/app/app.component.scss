@@ -169,6 +169,11 @@ h2 {
       border: 1px solid #4038d8;
       border-radius: 10px;
     }
+
+    .cdk-drop-list:hover:not(.active) {
+      border: 1px solid #4038d8;
+      border-radius: 10px;
+    }
 }
 
 .h-80 {

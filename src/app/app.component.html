@@ -3,17 +3,15 @@
   border-radius: 10px;
   padding: 20px;">
 
-    <div class="flex justify-between items-center gap-1" style="border: 1px solid #4038d8;
+    <div class="flex justify-end items-center gap-1" style="border: 1px solid #4038d8;
     border-radius: 10px;">
+      <h2 class="flex-1" style="margin: 0.5rem;">Trip Marker</h2>
       <span class="marker-container">
         <mat-icon matTooltip="Upload Trip"  class="marker" (click)="file.click();">cloud_upload</mat-icon>
         <input type="file" style="display:none" accept=".json" #file (change)="readFile($event)">
       </span>
       <span class="marker-container">
         <mat-icon matTooltip="Share Trip" class="marker" (click)="shareTrip()">cloud_download</mat-icon>
-      </span>
-      <span class="marker-container">
-        <mat-icon matTooltip="How it works" class="marker" >help</mat-icon>
       </span>
     </div>   
 
@@ -32,14 +30,14 @@
           <span class="flex-col w-full justify-start items-center p-2.5"  [ngClass]="{'active': trip.activeDay === dayIndex}">
             <div class="flex justify-between items-center" (click)="trip.setActiveDay(dayIndex)">
               <h2>{{day.label}}</h2>
-              <button mat-icon-button (click)="removeDay(dayIndex)">
+              <button mat-icon-button (click)="removeDay(dayIndex);$event.stopPropagation()">
                 <mat-icon>cancel</mat-icon>
               </button>
             </div>
             <div class="flex justify-start markers" *ngFor="let marker of day.markers; let markIndex = index" cdkDrag>
-              <p *ngIf="markerInEdit !== markIndex;else edit">{{marker.label}}</p>
+              <p *ngIf="markerInEdit !== markIndex || markerDay !== dayIndex;else edit">{{marker.label}}</p>
               <ng-template #edit>
-                <mat-form-field *ngIf="markerInEdit === markIndex" class="marker-form-field">
+                <mat-form-field *ngIf="markerInEdit === markIndex && markerDay === dayIndex" class="marker-form-field">
                   <input [(ngModel)]="marker.label" matInput (change)="resetEdit()">
                 </mat-form-field>
               </ng-template>
@@ -47,7 +45,7 @@
                 <mat-icon>more_horizontal</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="editMarker(markIndex)">
+                <button mat-menu-item (click)="editMarker(markIndex, dayIndex)">
                   <mat-icon>edit</mat-icon>
                   Edit
                 </button>
@@ -60,19 +58,6 @@
           </span>
         </div>
       </div>
-    
-
-    <!-- <div class="flex justify-center items-center gap-5 mt-5" style="margin-top: auto;">
-      <button mat-icon-button class="info-button">
-        <mat-icon>cloud_download</mat-icon>
-        Share Trip
-      </button>
-      <button mat-raised-button type="button" class="info-button" (click)="file.click();">
-        <mat-icon>cloud_upload</mat-icon>
-        Upload Trip
-      </button>
-      <input type="file" style="display:none" accept=".json" #file (change)="readFile($event)">
-    </div>    -->
 
   </div>
   <div class="row-span-6 col-span-1 md:col-span-5 md:order-2 order-1">
