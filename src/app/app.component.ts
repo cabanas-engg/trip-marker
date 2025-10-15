@@ -4,7 +4,7 @@ import { CdkDragDrop, CdkDragEnd, moveItemInArray, transferArrayItem } from '@an
 import * as GeoSearch from 'leaflet-geosearch';
 import ResultList from 'leaflet-geosearch/dist/resultList';
 import { Trip, TripMarker } from './classes/trip';
-
+import { icon_names } from './utils/utils';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +23,7 @@ export class AppComponent implements AfterViewInit {
   });
   private uploadedFile: JSON | string = "";
   markerInEdit: number | null = null;
+  markerDay: number | null = null;
   dragOnly: boolean = false;
 
   private initMap(): void {
@@ -45,10 +46,13 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.initMap();
+    this.trip.updateMap(this.map);
     this.map.addControl(this.searchInput);
     this.map.on('click',(event: L.LocationEvent) => {
       if(!this.dragOnly) {
-        let marker = L.marker(event.latlng, {draggable: true})
+        // const icon_option = this.trip.getDayColorIcon(this.setMarkerColor.bind(this));
+        const icon = this.trip.getDayColorIcon(this.setMarkerColor.bind(this));
+        const marker = L.marker(event.latlng, {draggable: true, icon})
         this.map.addLayer(marker)
         this.trip.updateMarkers(marker)
       }
@@ -79,9 +83,15 @@ export class AppComponent implements AfterViewInit {
 
   selectSearch(selectedQuery: string): void {
     this.searchInput.searchElement.handleSubmit({query: selectedQuery})
+    this.trip.updateMap(this.searchInput.map)
     this.setLocationLabel(selectedQuery);
+    this.clearSearch()
+  }
+
+  clearSearch(): void {
     this.searchText = "";
     this.searchResults = null;
+    this.searchInput.markers.remove()
   }
 
   setLocationLabel(label: string): void {
@@ -93,6 +103,7 @@ export class AppComponent implements AfterViewInit {
     if(this.map.hasLayer(marker)) {
       this.map.removeLayer(marker);
       this.trip.removeMarker(dayIndex, markIndex)
+      // this.trip.updateDayPolyline(dayIndex);
     }
   }
 
@@ -110,31 +121,55 @@ export class AppComponent implements AfterViewInit {
   }
 
   readFile(event: Event): void {
-    let file = (event.target as HTMLInputElement).files![0];
+    const file = (event.target as HTMLInputElement).files![0];
     const reader = new FileReader();
-    reader.readAsText(file, "UTF-8")
+    reader.readAsText(file, "UTF-8");
     reader.onload = () => {
-      this.uploadedFile = JSON.parse(reader.result as string);
-      this.readTripFile(this.uploadedFile);
-    }
+      const parsed = JSON.parse(reader.result as string);
+      this.readTripFile(parsed);
+    };
   }
 
-  readTripFile(file: string | JSON | any): void {
-    this.trip = new Trip(file.data)
-    console.log(this.trip)
-    this.trip.days.forEach( day => {
-      day.markers.forEach( marker => {
-        L.marker([43.73, -73.96]).addTo(this.map);
-        console.log(marker)
-      });
-    });
+  readTripFile(file: any): void {
+    this.trip = new Trip(file, this.map);
+    this.trip.map = this.map;
+    this.trip.centerMap();
+    console.log("Trip loaded:", this.trip);
   }
 
-  editMarker(markerIndex: number): void {
+  editMarker(markerIndex: number, dayIndex: number): void {
     this.markerInEdit = markerIndex;
+    this.markerDay = dayIndex;
   }
 
   resetEdit(): void {
     this.markerInEdit = null;
+    this.markerDay = null;
   }
+
+  shareTrip() {
+    const dataStr = JSON.stringify(this.trip.toJSON(), null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${this.trip.locationLabel} - Trip.json`;
+    a.click();
+
+    URL.revokeObjectURL(url);
 }
+
+  setMarkerColor(color: keyof typeof icon_names): L.Icon {
+    return new L.Icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/' + icon_names[color],
+      shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    })
+  
+  }
+  
+}  
